@@ -1,0 +1,92 @@
+<!DOCTYPE>
+<html>
+  <head>
+
+    <script src="cytoscape.min.js"></script>
+
+<style>
+    body {
+      font-family: helvetica;
+      font-size: 14px;
+    }
+
+    #cy {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 999;
+    }
+
+</style>
+
+  </head>
+  <body>
+
+    <div id="cy"></div>
+
+  <script>
+
+    var data = [ // list of graph elements to start with
+        { data: { id: 'GO:00001', name: 'name 1', pvalue: 0.1 } },
+        { data: { id: 'GO:00002', name: 'name 2', pvalue: 0.01 } },
+        { data: { id: 'GO:00003', name: 'name 3', pvalue: 0.2 } },
+        { data: { id: 'GO:00004', name: 'name 4', pvalue: 0.05 } },
+        { data: { id: 'GO:00005', name: 'name 5', pvalue: 0.15 } },
+        { data: { source: 'GO:00001', target: 'GO:00002' } },
+        { data: { source: 'GO:00005', target: 'GO:00004' } },
+        { data: { source: 'GO:00002', target: 'GO:00003' } },
+        { data: { source: 'GO:00001', target: 'GO:00005' } }
+    ];
+
+    var style = [ // the stylesheet for the graph
+        {
+          selector: 'node',
+          style: {
+            'background-color': 'mapData(pvalue,0,0.2,red,gray)',
+            'label': 'data(name)'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 1,
+            'line-color': '#ccc',
+            'curve-style': 'bezier'
+          }
+        }
+      ];
+
+        var cy = window.cy = cytoscape({
+          container: document.getElementById('cy'),
+
+          layout: {
+            name: 'cose',
+            idealEdgeLength: 100,
+            nodeOverlap: 20,
+            refresh: 20,
+            fit: true,
+            padding: 30,
+            randomize: false,
+            componentSpacing: 100,
+            nodeRepulsion: 400000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 80,
+            numIter: 1000,
+            initialTemp: 200,
+            coolingFactor: 0.95,
+            minTemp: 1.0
+          },
+
+          style: style, 
+
+          elements: data 
+
+        });
+
+  </script>
+
+  </body>
+</html>

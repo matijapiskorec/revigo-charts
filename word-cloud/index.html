@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<html>
+
+    <head>
+
+        <script type="text/javascript" src="tc.js"></script>
+
+        <script>
+
+        document.addEventListener("DOMContentLoaded", function(e) { 
+
+            var outputDiv = document.getElementById('tcdiv');
+            var tc = new TermCloud(outputDiv); 
+
+            var data = [
+                 {'keyword':'keyword1', 'enrichment': 0.1, 'QuickGO': 'something1'},
+                 {'keyword':'keyword2', 'enrichment': 0.2, 'QuickGO': 'something2'},
+                 {'keyword':'keyword3', 'enrichment': 0.3, 'QuickGO': 'something3'},
+                 {'keyword':'keyword4', 'enrichment': 0.4, 'QuickGO': 'something4'}
+            ];
+
+            tc.draw(data,null);
+
+        });
+
+        </script>
+
+    </head>
+
+    <body>
+
+        <div id="tcdiv" class="termclouddiv"></div> 
+
+    </body>
+
+</html>
+

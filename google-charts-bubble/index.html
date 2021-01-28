@@ -1,0 +1,203 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      var globalColor = 'p-value';
+      var globalSize = 'annotations';
+      var chart; 
+      var selectedGOterms = [];
+
+      google.charts.load('current', {'packages':['corechart']});
+
+      google.charts.setOnLoadCallback(function(){
+
+        var rawData = [
+          {'id': 'GO:00001', 'name':'name1', 'X': 80, 'Y': 167, 'p-value': 0.01, 'annotations': 100},
+          {'id': 'GO:00002', 'name':'name2', 'X': 79, 'Y': 136, 'p-value': 0.1,   'annotations': 95},
+          {'id': 'GO:00003', 'name':'name3', 'X': 78, 'Y': 184, 'p-value': 0.5,    'annotations': 5},
+          {'id': 'GO:00004', 'name':'name4', 'X': 72, 'Y': 278, 'p-value': 0.05, 'annotations': 150},
+          {'id': 'GO:00005', 'name':'name5', 'X': 81, 'Y': 200, 'p-value': 0.2,  'annotations': 140},
+          {'id': 'GO:00006', 'name':'name6', 'X': 72, 'Y': 170, 'p-value': 0.025,  'annotations': 1},
+          {'id': 'GO:00007', 'name':'name7', 'X': 68, 'Y': 477, 'p-value': 0.12,  'annotations': 30}
+        ];
+
+        chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
+
+        drawChart(rawData,globalColor,globalSize);
+
+        var target = document.querySelector('#go-terms-selector');
+
+        rawData.forEach( function(d,i) {
+
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.name = "go-term";
+            input.value = d.id; // GO id is used as identifier
+            target.appendChild(input);
+
+            var label = document.createElement("label");
+            label.for = d.id; // GO is is used as identifier
+            label.innerHTML = d.name; // GO description is used for display
+            target.appendChild(label);
+
+            target.appendChild(document.createElement("br"));
+
+        });
+
+        document.getElementById('color-selector').addEventListener('change', function() {
+          console.log('You selected: ', this.value, ' for color.');
+          globalColor = this.value;
+          drawChart(rawData,globalColor,globalSize);
+        });
+
+
+        document.getElementById('size-selector').addEventListener('change', function() {
+          console.log('You selected: ', this.value, ' for size.');
+          globalSize = this.value;
+          drawChart(rawData,globalColor,globalSize);
+        });
+
+        document.getElementById('go-terms-selector').addEventListener('change', function() {
+
+            var checkboxes = document.querySelectorAll('input[name="go-term"]:checked');
+
+            selectedGOterms = [];
+            checkboxes.forEach((checkbox) => {
+              selectedGOterms.push(checkbox.value);
+            });
+
+            console.log(selectedGOterms);
+
+            // Select appropriate GO terms on chart!
+
+            // Find the indices of the selected GO terms in the raw data
+            var goTermsID = [];
+            rawData.forEach( function(d,i) {
+                if (selectedGOterms.includes(d.id)) { goTermsID.push(i); }
+            });
+
+            // Select those GO terms on the bubble plot
+            chart.setSelection(goTermsID.map(function(x){return {row:x,column:null}}));
+
+        });
+
+      });
+
+      function drawChart(rawData,color,size) {
+
+        // Prepare data for plotting with Google Charts
+        var data = google.visualization.arrayToDataTable(
+            [['name', 'X', 'Y', 'color', 'size']].concat(
+                // GO term description is used for display, but GO id is used as identifier!
+                rawData.map(function(x){return [x['name'],x['X'],x['Y'],x[color],x[size]]})
+            ));
+
+        var xrange = data.getColumnRange('X');
+        var yrange = data.getColumnRange('Y');
+        var axisOffsetFraction = 0.1;
+
+        var options = {
+            chartArea: {width: '85%', height: '85%'},
+            colorAxis: {colors: ['steelblue', 'red']},
+            hAxis: {title: 'MDS component 1', 
+                    viewWindow: {min: xrange.min - axisOffsetFraction*(xrange.max-xrange.min),
+                                 max: xrange.max + axisOffsetFraction*(xrange.max-xrange.min)}
+                    }, 
+            vAxis: {title: 'MDS component 2', 
+                    viewWindow: {min: yrange.min - axisOffsetFraction*(yrange.max-yrange.min),
+                                 max: yrange.max + axisOffsetFraction*(yrange.max-yrange.min)}
+                    }, 
+
+            tooltip: {trigger: 'selection'}, // Trigger tooltips on selections
+            // tooltip: {trigger: 'none'}, // Trigger tooltips on selections
+            selectionMode: 'multiple', // Allow multiple simultaneous selections
+            aggregationTarget: 'none', // Selected tooltips stay individually visible
+
+            legend: {position:'right'}, // TODO: Not working?!
+            sizeAxis: {maxSize: 30, minSize: 5},
+            bubble: {textStyle: {color: 'none'}},
+            // backgroundColor: {strokeWidth: 1} // TODO: The whole chart, including axes and legend!
+        };
+
+        google.visualization.events.addListener(chart, 'select', function() {
+
+              var selectedItems = chart.getSelection(); 
+              if (selectedItems) {
+                selectedGOterms = selectedItems.map(function(x){return rawData[x.row].id});
+                console.log(selectedGOterms);
+
+                rawData.forEach( function(d,i) {
+                    if ( selectedGOterms.includes(d.id) ) {
+                        document.querySelectorAll('input[value="'+d.id+'"]')[0].checked = true;
+                    } else {
+                        document.querySelectorAll('input[value="'+d.id+'"]')[0].checked = false;
+                    }
+                });
+
+              }
+
+        });
+
+        chart.draw(data, options);
+
+        // TODO: Select tooltips which were selected from before!
+
+        // Find the indices of the selected GO terms in the raw data
+        var goTermsID = [];
+        rawData.forEach( function(d,i) {
+            // if (goTerms.includes(d.id)) { goTermsID.push(i); }
+            if (selectedGOterms.includes(d.id)) { goTermsID.push(i); }
+        });
+
+        // Select those GO terms on the bubble plot
+        chart.setSelection(goTermsID.map(function(x){return {row:x,column:null}}));
+
+
+      }
+
+    </script>
+  </head>
+  <body>
+    <div>
+        <div style="float:left">
+            <div id="chart_div" style="width: 700px; height: 600px;"></div>
+            <div id="toolbar_div"></div>
+        </div>
+
+        <div style="float:left">
+            <div>
+                <br>
+                Color:</br>
+                <select name="color-selector" id="color-selector">
+                  <option value="annotations">annotations</option>
+                  <option value="p-value" selected>p-value</option>
+                </select>
+            </div>
+
+            <br>
+
+            <div>
+                Size:</br>
+                <select name="size-selector" id="size-selector">
+                  <option value="annotations" selected>annotations</option>
+                  <option value="p-value">p-value</option>
+                </select>
+            </div>
+
+            <br>
+
+            <div>
+                Select GO terms:</br>
+                <!-- Will be filled dynmically -->
+                <form name="go-terms-selector" 
+                      id="go-terms-selector" 
+                      style="height:100px;overflow-y:auto">
+                </form> 
+            </div>
+        </div>
+
+    </div>
+
+  </body>
+</html>

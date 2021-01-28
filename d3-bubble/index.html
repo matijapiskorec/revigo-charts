@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<html>
+
+    <head>
+
+        <script type="text/javascript" src="jquery-3.4.1.min.js" defer></script>
+        <script type="text/javascript" src="d3.v5.min.js" defer></script>
+        <script type="text/javascript" src="d3-bubble.js" defer></script>
+
+        <link rel="stylesheet" type="text/css" href="d3-bubble.css"/>
+
+    </head>
+
+    <body>
+
+        <div>
+            <div style="float:left">
+                <div id="chart_div"></div>
+            </div>
+
+            <div style="float:left">
+                <div>
+                    Color:</br>
+                    <select name="color-selector" id="color-selector">
+                      <option value="annotations">annotations</option>
+                      <option value="p-value" selected>p-value</option>
+                    </select>
+                </div>
+
+                <br>
+
+                <div id="legend-color" style="float:right"></div>
+
+                <div>
+                    Size:</br>
+                    <select name="size-selector" id="size-selector">
+                      <option value="annotations" selected>annotations</option>
+                      <option value="p-value">p-value</option>
+                    </select>
+                </div>
+
+                <br>
+
+                <div id="legend-size" style="float:right"></div>
+
+                <div>
+                    Select:</br>
+                    <!-- Will be filled dynmically -->
+                    <form name="go-terms-selector" 
+                          id="go-terms-selector" 
+                          style="height:250px;overflow-y:auto">
+                    </form> 
+                </div>
+            </div>
+
+        </div>
+        </body>
+
+</html>
+
