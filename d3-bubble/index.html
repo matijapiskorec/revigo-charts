@@ -5,9 +5,9 @@
 
     <head>
 
-        <script type="text/javascript" src="jquery-3.4.1.min.js" defer></script>
-        <script type="text/javascript" src="d3.v5.min.js" defer></script>
-        <script type="text/javascript" src="d3-bubble.js" defer></script>
+        <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="d3.v5.min.js"></script>
+        <script type="text/javascript" src="d3-bubble.js"></script>
 
         <link rel="stylesheet" type="text/css" href="d3-bubble.css"/>
 
@@ -15,48 +15,34 @@
 
     <body>
 
-        <div>
-            <div style="float:left">
-                <div id="chart_div"></div>
-            </div>
+        <div id="bp"></div>
 
-            <div style="float:left">
-                <div>
-                    Color:</br>
-                    <select name="color-selector" id="color-selector">
-                      <option value="annotations">annotations</option>
-                      <option value="p-value" selected>p-value</option>
-                    </select>
-                </div>
+        <script>
 
-                <br>
+    // Raw data containing original values
+    var rawData = [
+      {'id': 'GO:00001', 'selected':0, 'name':'name1', 'X': 80, 'Y': 167, 'p-value': 0.01, 'annotations': 100},
+      {'id': 'GO:00002', 'selected':0, 'name':'name2', 'X': 60, 'Y': 136, 'p-value': 0.1, 'annotations': 95},
+      {'id': 'GO:00003', 'selected':0, 'name':'name3', 'X': 28, 'Y': 184, 'p-value': 0.5, 'annotations': 5},
+      {'id': 'GO:00004', 'selected':0, 'name':'name4', 'X': 72, 'Y': 278, 'p-value': 0.05, 'annotations': 150},
+      {'id': 'GO:00005', 'selected':1, 'name':'name5', 'X': 81, 'Y': 200, 'p-value': 0.2, 'annotations': 140},
+      {'id': 'GO:00006', 'selected':0, 'name':'name6', 'X': 72, 'Y': 170, 'p-value': 0.025, 'annotations': 1},
+      {'id': 'GO:00007', 'selected':0, 'name':'name7', 'X': 58, 'Y': 477, 'p-value': 0.12, 'annotations': 30},
+      {'id': 'GO:00008', 'selected':1, 'name':'name6', 'X': 12, 'Y': 270, 'p-value': 0.25, 'annotations': 15},
+      {'id': 'GO:00009', 'selected':0, 'name':'name2', 'X': 100, 'Y': 10, 'p-value': 0.01, 'annotations': 120},
+      {'id': 'GO:00010', 'selected':1, 'name':'name10', 'X': 130, 'Y': 140, 'p-value': 0.001, 'annotations': 80},
+      {'id': 'GO:00011', 'selected':0, 'name':'name11', 'X': 150, 'Y': 222, 'p-value': 0.5, 'annotations': 30},
+      {'id': 'GO:00012', 'selected':0, 'name':'name12', 'X': 160, 'Y': 65, 'p-value': 0.05, 'annotations': 130},
+      {'id': 'GO:00013', 'selected':0, 'name':'name13', 'X': 170, 'Y': 150, 'p-value': 0.005, 'annotations': 110}
+    ];
 
-                <div id="legend-color" style="float:right"></div>
+            // Draw bubble chart with p-value column mapped to color and annotations to size
+            var chart = new BubbleChart("bp",rawData);
+            chart.draw("p-value", "annotations");
 
-                <div>
-                    Size:</br>
-                    <select name="size-selector" id="size-selector">
-                      <option value="annotations" selected>annotations</option>
-                      <option value="p-value">p-value</option>
-                    </select>
-                </div>
+        </script>
 
-                <br>
-
-                <div id="legend-size" style="float:right"></div>
-
-                <div>
-                    Select:</br>
-                    <!-- Will be filled dynmically -->
-                    <form name="go-terms-selector" 
-                          id="go-terms-selector" 
-                          style="height:250px;overflow-y:auto">
-                    </form> 
-                </div>
-            </div>
-
-        </div>
-        </body>
+    </body>
 
 </html>
 
